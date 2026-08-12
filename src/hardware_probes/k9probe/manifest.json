@@ -1,0 +1,104 @@
+{
+  "effect_name": "K9Probe",
+  "comment": "Hardware probe: prove knobs 4..9 (pages 2/3, LineSel-cloned synthesized handlers) can be touched without freezing and that each writes its own params[] slot. Knobs 1..3 use the hardware-proven stock blobs (LineSel knob1/knob2 + AIR knob3); knobs 4..9 use linker synthesize_linesel_edit_handlers clones (knob_id 5..10, param_byte_off 32..52). The audio body maps each param to a distinct gain: odd knobs boost the L block, even knobs boost the R block, step (k+1)*0.04 per unit, so turning a knob is audibly identifiable and provably lands in params[5+k].\n\nWhat to watch for after flashing:\n  1. Load - does K9Probe appear in the Filter category browser?\n  2. Page 1 (knobs 1-3): do all three knobs change gain without freezing?\n  3. Navigate to page 2 (knobs 4-6) and page 3 (knobs 7-9): pedal stays alive when each knob is touched?\n  4. Bypass toggle - does it stay alive?\n\nPass criterion: touch every knob on all three pages, the pedal never freezes, and each knob changes the output in its expected channel/amount.",
+  "audio_func_name": "Fx_FLT_K9Probe",
+  "gid": 2,
+  "gid_comment": "0x02 = Filter category. Stays out of Delay so it does not collide with TapeEcho4.",
+  "fxid": 500,
+  "fxid_comment": "0x01F4. New FXID for the 9-knob synth-handler probe.",
+  "fxid_version": "1.00",
+  "flags_byte": 1,
+  "params": [
+    {
+      "name": "Knob1",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 1 knob 1. Slot 5, knob_id 2, param_byte_off 20."
+    },
+    {
+      "name": "Knob2",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 1 knob 2. Slot 6, knob_id 3, param_byte_off 24."
+    },
+    {
+      "name": "Knob3",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 1 knob 3. Slot 7, knob_id 4, param_byte_off 28."
+    },
+    {
+      "name": "Knob4",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 2 knob 1. Slot 8, knob_id 5, param_byte_off 32."
+    },
+    {
+      "name": "Knob5",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 2 knob 2. Slot 9, knob_id 6, param_byte_off 36."
+    },
+    {
+      "name": "Knob6",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 2 knob 3. Slot 10, knob_id 7, param_byte_off 40."
+    },
+    {
+      "name": "Knob7",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 3 knob 1. Slot 11, knob_id 8, param_byte_off 44."
+    },
+    {
+      "name": "Knob8",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 3 knob 2. Slot 12, knob_id 9, param_byte_off 48."
+    },
+    {
+      "name": "Knob9",
+      "type": "knob",
+      "max": 255,
+      "default": 0,
+      "audio_min": 0.0,
+      "audio_max": 1.0,
+      "audio_default": 0.0,
+      "comment": "Page 3 knob 3. Slot 13, knob_id 10, param_byte_off 52."
+    }
+  ],
+  "audio_nop": false
+}

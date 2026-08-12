@@ -50,6 +50,7 @@ DIAGNOSTIC_PLUGINS = [
     ("descsize",    PROBE_DIR / "descsize"    / "build.py"),
     ("desciso",     PROBE_DIR / "desciso"     / "build.py"),
     ("initprobe",   PROBE_DIR / "initprobe"   / "build.py"),
+    ("k9probe",     PROBE_DIR / "k9probe"     / "build.py"),
 ]
 
 PLUGINS = RELEASE_PLUGINS + DIAGNOSTIC_PLUGINS
