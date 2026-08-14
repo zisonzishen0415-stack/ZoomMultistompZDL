@@ -34,6 +34,7 @@ RELEASE_PLUGINS = [
     ("verbtiny",    PLUGIN_DIR / "verbtiny"    / "build.py"),
     ("galactic",    PLUGIN_DIR / "galactic"    / "build.py"),
     ("ott",         CUSTOM_DIR / "ott"         / "build.py"),
+    ("reverson",    CUSTOM_DIR / "reverson"    / "build.py"),
 ]
 
 DIAGNOSTIC_PLUGINS = [
