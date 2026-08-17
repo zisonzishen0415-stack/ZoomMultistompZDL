@@ -1,7 +1,12 @@
-> **项目状态（2026-08-16 修订）：失败。**
-> 经 G1on 实机多次验证，自制 ZDL **无法在 G1on 上稳定工作**（表现为：无 UI、bypass、或切换死机）。
-> 此前文档中的“已验证 / 可用 / 可运行 / 已对齐 / 可收口”等表述，均不代表 G1on 实机可用。
-> 本项目的 ZDL 目标当前**未达成**，现状为失败；任何后续结论不得以“G1on 可用”为前提。
+> **项目状态（2026-08-17 修订）：根因已定位并修复，待 G1on 复测。**
+> 2026-08-16 的 G1on 实机失败（无 UI、bypass、或切换死机）根因已找到：
+> `effectTypeImageInfo +0x20` 被 linker 写成了总参数数（Reverson=9），
+> 而该字段是**每页可见旋钮槽数**（stock 9 参数效果均写 3，GEQ 类写 6/7）。
+> linker 已于 2026-08-17 修复（`build/linker.py`），Reverson.ZDL 与
+> K9Probe.ZDL 已重建（+0x20=3，与 G1on_STDELAY 等 stock 一致）。
+> **复测顺序**：先刷 K9Probe.ZDL（Filter 类别）验证合成 handler 旋钮 4..9
+> 不冻结，再刷 Reverson.ZDL 验证 UI/bypass/切换。
+> 在 G1on 复测通过前，本项目的 ZDL 目标仍视为**未达成**。
 
 # Zoom MultiStomp ZDL
 
