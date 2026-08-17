@@ -190,6 +190,7 @@ Hardware-observed freezes mapped to their causes:
 | `Galactic`-era `.fardata` experiments | Boot | Large writable static data in `.fardata` froze hardware in v1 | Keep large state in `ctx[3]`, not `.fardata`; see [STATE-ABI-PROGRESS.md](STATE-ABI-PROGRESS.md) |
 | `--opt_for_space=3` cl6x output | Boot | cl6x at level 3 emits unfillable indirect-dispatch thunks | Drop the flag — `feedback_linker_obj_const` |
 | Descriptor entry +0x28 = 0 | Effect drops from edit-mode UI | Entry 1's `+0x28` is a CPU/memory cost estimate; writing 0 silently drops params | Linker writes 20.0f; see `build/ABI.md` |
+| imageInfo `+0x20` = total param count (>3) | No UI / freeze on load or page switch (G1on 2026-08-16) | `effectTypeImageInfo +0x20` is the **visible knob slots per edit page** (3 for the standard 3-per-page layout, 6/7 for GEQ-style one-page layouts), NOT the total param count. Stock 9-param effects (G1on_STDELAY, DUAL_REV) advertise 3. The linker wrote `total_knobs` for >3 params → Reverson (9 knobs) advertised 9 slots on one page → G1on rendered no usable UI / froze. K9Probe had the same latent bug (never hardware-tested) | `_build_image_info` now writes `knob_count_override or 3` to `+0x20` (2026-08-17, verified against G1on_STDELAY/GEQ); header words still keyed off param count |
 
 ## 7. Loader's optional-feature handling (failure modes that aren't freezes)
 

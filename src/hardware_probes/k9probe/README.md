@@ -19,6 +19,15 @@ and a full 9-knob Reverson ZDL.
 | 8 (params[12]) | 3 | synthesized LineSel clone (knob_id 9, off 48) | **open** |
 | 9 (params[13]) | 3 | synthesized LineSel clone (knob_id 10, off 52) | **open** |
 
+> **2026-08-17: imageInfo `+0x20` bug fixed in the linker.** Previously
+> `effectTypeImageInfo +0x20` was written as the TOTAL param count for
+> >3-param effects (9 here). Stock 9-param effects (G1on_STDELAY) advertise
+> 3 = visible knob slots per edit page. The wrong value made G1on render
+> no usable UI / freeze (Reverson hardware test 2026-08-16). The linker
+> now writes `knob_count_override or 3`; this probe and Reverson both
+> rebuild with `+0x20 = 3`. Knobs 4..9 synthesized-handler behavior is
+> still unproven on hardware — this probe remains the gate for that.
+
 Descriptor advertises the full 9-user-knob ceiling (3 pages x 3 visible
 knobs, AIR-style paginated `effectTypeImageInfo`).
 

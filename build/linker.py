@@ -622,9 +622,13 @@ def _build_descriptor(
 
 
 # ---------------------------------------------------------------------------
-# effectTypeImageInfo — exactly 212 bytes. For paginated effects, the count
-# field is the total user-param count, while only the first three coordinate
-# blocks are populated; the rest of the fixed 212-byte struct is zero padding.
+# effectTypeImageInfo — exactly 212 bytes. The +0x20 word is the number of
+# knob slots visible per page (3 for the standard 3-knob paginated layout;
+# 6/7 for GEQ-style one-page layouts via knob_count_override), NOT the total
+# parameter count. Stock 9-param effects (G1on_STDELAY) advertise 3 here;
+# advertising the param count makes the firmware render all 9 knobs on one
+# page (no UI / freeze on G1on). Only the first three coordinate blocks are
+# populated; the rest of the fixed 212-byte struct is zero padding.
 # ---------------------------------------------------------------------------
 
 def _build_image_info(
@@ -638,14 +642,16 @@ def _build_image_info(
     info = bytearray()
     relocs: list[tuple[int, int]] = []
 
-    # Single-page plugins (<=3 knobs) like Exciter/OptComp advertise 3 in
-    # the header. Multi-page plugins (AIR-style) advertise the total param
-    # count in the count field, but still only carry three coordinate slots.
-    effective_knobs = (
+    # Header words: Exciter/OptComp pattern for exactly 3 params, AIR
+    # (paginated) pattern for >3 params, LineSel pattern for 1-2 params.
+    header_knobs = (
         knob_count_override
         if knob_count_override is not None
-        else total_knobs if total_knobs > 3 else 3
+        else total_knobs
     )
+    # Visible knob slots per edit page: 3 for standard layouts (including
+    # 9-param 3-page effects), override for GEQ-style one-page layouts.
+    visible_knobs = knob_count_override if knob_count_override is not None else 3
 
     # Header (32 bytes)
     info.extend(struct.pack('<I', 0))
@@ -659,23 +665,23 @@ def _build_image_info(
     if header_words_override is not None:
         info.extend(struct.pack('<I', header_words_override[0]))
         info.extend(struct.pack('<I', header_words_override[1]))
-    elif effective_knobs == 3:
+    elif header_knobs == 3:
         info.extend(struct.pack('<I', 32))  # Exciter/OptComp pattern
         info.extend(struct.pack('<I', 17))
-    elif effective_knobs > 3:
+    elif header_knobs > 3:
         info.extend(struct.pack('<I', 21))  # AIR (paginated) pattern
         info.extend(struct.pack('<I', 23))
     else:
         info.extend(struct.pack('<I', 28))  # LineSel (1 or 2 knobs) pattern
         info.extend(struct.pack('<I', 17))
 
-    # Knob count and coordinate slots
-    info.extend(struct.pack('<I', effective_knobs))
+    # Visible knob count per page (NOT the total param count)
+    info.extend(struct.pack('<I', visible_knobs))
     
     # Coordinate blocks. Only the first three visible slots are meaningful;
     # the 212-byte struct has enough zero padding for the advertised count.
     blocks = list(knob_positions)
-    while len(blocks) < 3 and effective_knobs == 3:
+    while len(blocks) < 3 and visible_knobs == 3:
         blocks.append((0, 0, 0))
 
     for kid, kx, ky in blocks:
